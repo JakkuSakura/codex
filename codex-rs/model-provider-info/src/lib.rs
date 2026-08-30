@@ -313,7 +313,9 @@ impl ModelProviderInfo {
         let retry = ApiRetryConfig {
             max_attempts: self.request_max_retries(),
             base_delay: Duration::from_millis(200),
-            retry_429: false,
+            // Rate limiting is transient; let the shared retry policy back off
+            // instead of surfacing a terminal error immediately.
+            retry_429: true,
             retry_5xx: true,
             retry_transport: true,
         };
